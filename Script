@@ -1,0 +1,32 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Oct 15 11:27:27 2018
+
+@author: JBuccheri
+"""
+
+
+
+#Synthesizing all learned elements into one text parsing script
+
+import pyodbc 
+import pandas as pd
+import re
+
+my_query = """SELECT TOP 500* FROM SbFinDispute.TAT_DisputeCurrent_DC 
+                where norm_vendor='ATT' and display_status='approved' and audit_type='Cost Optimization'"""
+my_regex = 'BARM|Karen Bates|lump sum|sum adj'
+
+cnxn = pyodbc.connect("Driver={SQL Server};"
+                      "Server=ODS;"
+                      "Database=ODS;"
+                      "Trusted_Connection=yes;")
+
+my_df = pd.read_sql_query(my_query,cnxn)
+
+
+#testing phase for below
+my_return = my_df.ILEC_Comments.str.contains(my_regex,flags=re.IGNORECASE,regex=True,na=False)
+    
+cnxn.close()
+
